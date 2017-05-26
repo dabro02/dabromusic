@@ -1,5 +1,6 @@
 package com.dabro.music;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -11,11 +12,11 @@ public class LoadSongs {
 
     ArrayList<File> songs;
     FileReader fr;
+    BufferedReader br;
+    String file;
 
-    MusicPlayer player;
 
-    LoadSongs(MusicPlayer player) {
-        this.player = player;
+    LoadSongs() {
         songs = new ArrayList<File>();
         if(new File("geheimeSongs.list").exists()){
             setSongs();
@@ -24,7 +25,13 @@ public class LoadSongs {
 
     public void readSongs() {
         try {
+            songs.clear();
             fr = new FileReader("geheimeSongs.list");
+            br = new BufferedReader(fr);
+            while((file = br.readLine()) != null){
+                songs.add(new File(file));
+            }
+
         }
         catch (Exception e){}
 
@@ -33,7 +40,7 @@ public class LoadSongs {
 
     public void setSongs() {
         readSongs();
-        this.songs = player.songs;
+
     }
 
 }
