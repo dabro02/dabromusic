@@ -18,6 +18,7 @@ public class MusicPlayer extends ApplicationAdapter {
 	BitmapFont font;
 	CharSequence str = "Loading";
 	SearchSongs searchSongs;
+	LoadSongs loadSongs;
 	ArrayList<File> songs;
 
 	Texture loading;
@@ -32,7 +33,9 @@ public class MusicPlayer extends ApplicationAdapter {
 		batch = new SpriteBatch();
 		font = new BitmapFont();
 		searchSongs = new SearchSongs();
+		loadSongs = new LoadSongs(this);
 		loading = new Texture("LoadingCircle.png");
+		//Loadinganimation
 		regions = TextureRegion.split(loading, loading.getWidth()/8, loading.getHeight());
 		loadingsprite = new Sprite(regions[0][0]);
 		Timer.schedule(new Timer.Task() {
@@ -44,11 +47,13 @@ public class MusicPlayer extends ApplicationAdapter {
 				loadingsprite.setRegion(regions[0][frame]);
 			}
 		}, 0, 1/17f);
-
+		//----------------
 
 
 		Gdx.gl.glClearColor(0.3f, 0.3f, 0.3f, 1);
-		loadSongs();
+
+		System.out.println(searchSongs.songs);
+
 	}
 
 	@Override
@@ -73,26 +78,22 @@ public class MusicPlayer extends ApplicationAdapter {
 
 	protected void handleinput(){
 		if(Gdx.input.justTouched()){
-			loadSongs();
+
+			new Thread(new Runnable() {
+				@Override
+				public void run() {
+					searching = true;
+					searchSongs.songs.clear();
+					searchSongs.search("C:/Users/Daniel");
+					searchSongs.save();
+					loadSongs.setSongs();
+					searching = false;
+				}
+			}).start();
 		}
 	}
 
 	protected void update() {
 		handleinput();
-	}
-
-	protected void loadSongs(){
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				searching = true;
-				searchSongs.songs.clear();
-				searchSongs.search("C:/Users/Daniel");
-				searchSongs.save();
-				songs = searchSongs.getSongs();
-				System.out.println(songs + "  "+ songs.size());
-				searching = false;
-			}
-		}).start();
 	}
 }

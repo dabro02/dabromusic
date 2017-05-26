@@ -56,8 +56,4 @@ public class SearchSongs {
         }
 
     }
-
-    public ArrayList<File> getSongs() {
-        return songs;
-    }
 }
