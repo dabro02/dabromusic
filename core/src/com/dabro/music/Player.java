@@ -46,10 +46,10 @@ public class Player implements Music {
     public void oneBack() {
         i++;
         music.stop();
-        if(i >=2){
+        if(i >0){
             actualsong = playedSongs.get(playedSongs.size()-i);}
         else{
-            actualsong = playedSongs.get(playedSongs.size()-2);
+            actualsong = songs.get(math.random(0, songs.size()));
             i = 1;}
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         actualsong = actualsong.substring(0, actualsong.length()-4);
