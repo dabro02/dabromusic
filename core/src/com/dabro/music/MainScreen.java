@@ -19,7 +19,7 @@ public class MainScreen extends Screen{
     BitmapFont font;
     SearchSongs searchSongs;
     LoadSongs loadSongs;
-    ArrayList<File> songs;
+    ArrayList<String> songs;
 
 
     Thread thread2;
@@ -34,12 +34,12 @@ public class MainScreen extends Screen{
 
     public MainScreen(ScreenManager sm) {
         super(sm);
-        player = new Player(songs);
         font = new BitmapFont(false);
         loading = new Loading( 1920/2-80, 1080/2);
         searchSongs = new SearchSongs();
         loadSongs = new LoadSongs();
         songs = loadSongs.songs;
+        player = new Player(songs);
     }
 
     @Override
@@ -55,12 +55,19 @@ public class MainScreen extends Screen{
                     searchSongs.save();
                     loadSongs.readSongs();
                     isloading = false;
+                    player.update(songs);
                 }
             });
             thread2.start();
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
-
+        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
+            player.playPause();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
+            player.newSong();
+        }
+        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
+            player.oneBack();
         }
 
     }
@@ -76,10 +83,11 @@ public class MainScreen extends Screen{
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        for(File file: songs){
+        for(String file: songs){
 
 
         }
+        font.draw(sb,player.getChrSequence(), 200, 1000 );
         loading.render(sb);
         sb.end();
 

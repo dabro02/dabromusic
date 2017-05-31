@@ -10,14 +10,14 @@ import java.util.ArrayList;
  */
 public class LoadSongs {
 
-    ArrayList<File> songs;
+    ArrayList<String> songs;
     FileReader fr;
     BufferedReader br;
     String file;
 
 
     LoadSongs() {
-        songs = new ArrayList<File>();
+        songs = new ArrayList<String>();
         if(new File("geheimeSongs.list").exists()){
             setSongs();
         }
@@ -29,7 +29,7 @@ public class LoadSongs {
             fr = new FileReader("geheimeSongs.list");
             br = new BufferedReader(fr);
             while((file = br.readLine()) != null){
-                songs.add(new File(file));
+                songs.add(file);
             }
 
         }
