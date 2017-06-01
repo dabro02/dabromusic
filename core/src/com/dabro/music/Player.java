@@ -23,39 +23,72 @@ public class Player implements Music {
     int i = 1;
 
     Player(ArrayList<String> songs){
-        playedSongs = new ArrayList<String>();
-        this.songs = songs;
-        math = new MathUtils();
-        actualsong = songs.get(math.random(0, songs.size()));
-        playedSongs.add(actualsong);
-        music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
-        actualsong = actualsong.substring(0, actualsong.length()-4);
-        segs = actualsong.split("\\\\");
+            playedSongs = new ArrayList<String>();
+            math = new MathUtils();
+            try {
+            this.songs = songs;
+            actualsong = songs.get(math.random(0, songs.size()));
+            playedSongs.add(actualsong);
+            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+            actualsong = actualsong.substring(0, actualsong.length() - 4);
+            segs = actualsong.split("\\\\");
+        }
+        catch(Exception e){}
     }
 
     public void newSong() {
-        music.stop();
+        try{
+        music.stop();}
+        catch (Exception e){}
+        try{
         actualsong = songs.get(math.random(0, songs.size()));
         playedSongs.add(actualsong);
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         actualsong = actualsong.substring(0, actualsong.length()-4);
         segs = actualsong.split("\\\\");
-        music.play();
+        music.play();}
+        catch (Exception e){}
     }
-
+/*
     public void oneBack() {
         i++;
-        music.stop();
-        if(i >0){
+        try{
+            music.stop();}
+        catch (Exception e){}
+
+
+        try{
+        if(i >1){
             actualsong = playedSongs.get(playedSongs.size()-i);}
         else{
-            actualsong = songs.get(math.random(0, songs.size()));
-            i = 1;}
+            i = 2;}
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         actualsong = actualsong.substring(0, actualsong.length()-4);
         segs = actualsong.split("\\\\");
-        music.play();
+        music.play();}
+        catch (Exception e){}
+        System.out.println(i);
     }
+
+    public void oneForward() {
+        i--;
+        try{
+            music.stop();}
+        catch (Exception e){}
+
+        try{
+            if(i < playedSongs.size()){
+            actualsong = playedSongs.get(playedSongs.size()-i);}
+        else{
+            i = playedSongs.size()-1;}
+            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+            actualsong = actualsong.substring(0, actualsong.length()-4);
+            segs = actualsong.split("\\\\");
+            music.play();}
+        catch (Exception e){}
+        System.out.println(i);
+    }
+*/
 
     public void playPause(){
         if(isPlaying()){

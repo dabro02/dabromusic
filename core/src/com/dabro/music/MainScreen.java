@@ -2,13 +2,11 @@ package com.dabro.music;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.audio.Music;
-import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Vector3;
 
-import java.io.File;
 import java.util.ArrayList;
 
 /**
@@ -20,6 +18,9 @@ public class MainScreen extends Screen{
     SearchSongs searchSongs;
     LoadSongs loadSongs;
     ArrayList<String> songs;
+
+    Texture playpauseButton;
+    Vector3 playpausePosition;
 
 
     Thread thread2;
@@ -34,17 +35,21 @@ public class MainScreen extends Screen{
 
     public MainScreen(ScreenManager sm) {
         super(sm);
+        playpauseButton = new Texture("Play.png");
+        playpausePosition = new Vector3(1500,950,0);
         font = new BitmapFont(false);
         loading = new Loading( 1920/2-80, 1080/2);
         searchSongs = new SearchSongs();
         loadSongs = new LoadSongs();
         songs = loadSongs.songs;
+        System.out.println(player);
         player = new Player(songs);
+
     }
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.justTouched() && !isloading){
+        if(Gdx.input.isKeyJustPressed(Input.Keys.O) && !isloading){
             isloading = true;
             thread2 = new Thread(new Runnable() {
                 @Override
@@ -55,20 +60,67 @@ public class MainScreen extends Screen{
                     searchSongs.save();
                     loadSongs.readSongs();
                     isloading = false;
+                    try {
                     player.update(songs);
+                    }
+                    catch(Exception e){}
                 }
             });
             thread2.start();
         }
-        if(Gdx.input.isKeyJustPressed(Input.Keys.SPACE)){
-            player.playPause();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.ENTER)){
-            player.newSong();
-        }
-        else if(Gdx.input.isKeyJustPressed(Input.Keys.LEFT)){
-            player.oneBack();
-        }
+            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+                try {
+                    player.update(songs);
+                }
+                catch(Exception e){}
+                player.playPause();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
+                try {
+                    player.update(songs);
+                }
+                catch(Exception e){}
+                player.newSong();
+            }
+
+            /*else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
+                try {
+                    player.update(songs);
+                }
+                catch(Exception e){}
+                player.oneBack();
+            } else if (Gdx.input.isKeyJustPressed(Input.Keys.RIGHT)){
+                try {
+                    player.update(songs);
+                }
+                catch(Exception e){}
+                player.oneForward();
+            }*/
+
+            if(Gdx.input.getX() >= playpausePosition.x && Gdx.input.getX() <= playpausePosition.x+playpauseButton.getWidth() && Gdx.graphics.getHeight()-Gdx.input.getY() >= playpausePosition.y && Gdx.graphics.getHeight()-Gdx.input.getY() <= playpausePosition.y+playpauseButton.getHeight() ){
+                if(Gdx.input.justTouched()){
+                    playpausePosition.set(1502,948,0);
+                    try {
+                        player.update(songs);
+                    }
+                    catch(Exception e){}
+                    player.playPause();
+                }
+                else{
+                    playpausePosition.set(1500,950,0);
+                }
+                if(!player.isPlaying())
+                    playpauseButton= new Texture("PlayPointed.png");
+                else
+                    playpauseButton = new Texture("PausePointed.png");
+            }
+            else {
+                if (!player.isPlaying())
+                    playpauseButton = new Texture("Play.png");
+                else
+                    playpauseButton = new Texture("Pause.png");
+            }
+
+
 
     }
 
@@ -83,11 +135,11 @@ public class MainScreen extends Screen{
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
-        for(String file: songs){
-
-
+        sb.draw(playpauseButton, playpausePosition.x,playpausePosition.y);
+        try{
+        font.draw(sb,player.getChrSequence(), 200, 1000 );}
+        catch(Exception e){
         }
-        font.draw(sb,player.getChrSequence(), 200, 1000 );
         loading.render(sb);
         sb.end();
 
