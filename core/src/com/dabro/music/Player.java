@@ -13,6 +13,8 @@ import java.util.Arrays;
  */
 public class Player implements Music {
 
+    boolean firststart = false;
+
     ArrayList<String> playedSongs;
 
     ArrayList<String> songs;
@@ -20,7 +22,6 @@ public class Player implements Music {
     MathUtils math;
     String actualsong;
     String[] segs;
-    int i = 1;
 
     Player(ArrayList<String> songs){
             playedSongs = new ArrayList<String>();
@@ -28,11 +29,10 @@ public class Player implements Music {
             try {
             this.songs = songs;
             actualsong = songs.get(math.random(0, songs.size()));
-            playedSongs.add(actualsong);
+            //playedSongs.add(actualsong);
             music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
             actualsong = actualsong.substring(0, actualsong.length() - 4);
             segs = actualsong.split("\\\\");
-            music.setPosition(20f);
         }
         catch(Exception e){}
     }
@@ -43,13 +43,144 @@ public class Player implements Music {
         catch (Exception e){}
         try{
         actualsong = songs.get(math.random(0, songs.size()));
-        playedSongs.add(actualsong);
+        //playedSongs.add(actualsong);
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         actualsong = actualsong.substring(0, actualsong.length()-4);
         segs = actualsong.split("\\\\");
-        music.play();}
+        if(firststart) {
+            music.play();
+        }
+        }
         catch (Exception e){}
     }
+
+
+    public void playPause(){
+        if(isPlaying()){
+            pause();
+            System.out.println("pause");
+        }
+        else{
+            play();
+            System.out.println("play");
+        }
+    }
+
+    public CharSequence getChrSequence(){
+        return (CharSequence) segs[segs.length-1];
+    }
+
+    @Override
+    public void play() {
+        try{
+        if(!isPlaying()){
+            music.play();
+        } }catch (Exception e){
+        }
+    }
+
+    @Override
+    public void pause() {
+        try{
+        if(isPlaying()){
+            music.pause();
+        }}catch (Exception e){
+    }
+    }
+
+    @Override
+    public void stop() {
+            try{
+                if(isPlaying()){
+                    music.stop();
+                }
+            }   catch (Exception e){
+        }
+    }
+
+    @Override
+    public boolean isPlaying() {
+        try{
+            return music.isPlaying();}
+            catch (Exception e){
+            return false;
+            }
+
+    }
+
+    @Override
+    public void setLooping(boolean isLooping) {
+        try{
+        music.setLooping(isLooping);
+    }   catch (Exception e){
+    }
+    }
+
+    @Override
+    public boolean isLooping() {
+        try{
+        return music.isLooping();
+        }   catch (Exception e){
+            return false;
+        }
+    }
+
+    @Override
+    public void setVolume(float volume) {
+        try{
+        music.setVolume(volume);
+    }   catch (Exception e){}
+    }
+
+    @Override
+    public float getVolume() {
+    try{
+        return music.getVolume();
+    }   catch (Exception e){ return 0;}
+    }
+
+    @Override
+    public void setPan(float pan, float volume) {
+        try{
+        music.setPan(pan, volume);
+    }   catch (Exception e){}
+    }
+
+    @Override
+    public void setPosition(float position) {
+        try{
+        music.setPosition(position);
+    }   catch (Exception e){}
+    }
+
+    @Override
+    public float getPosition() {
+        try{
+        return music.getPosition();
+    }   catch (Exception e){return 0;}
+    }
+
+    @Override
+    public void dispose() {
+        try{
+        music.dispose();
+    }   catch (Exception e){}
+    }
+
+    @Override
+    public void setOnCompletionListener(OnCompletionListener listener) {
+        try{
+        music.setOnCompletionListener(listener);
+    }   catch (Exception e){}
+    }
+
+    public void update(ArrayList<String> songs){
+        this.songs = songs;
+    }
+}
+
+
+
 /*
     public void oneBack() {
         i++;
@@ -90,95 +221,3 @@ public class Player implements Music {
         System.out.println(i);
     }
 */
-
-    public void playPause(){
-        if(isPlaying()){
-            pause();
-            System.out.println("pause");
-        }
-        else{
-            play();
-            System.out.println("play");
-        }
-    }
-
-    public CharSequence getChrSequence(){
-        return (CharSequence) segs[segs.length-1];
-    }
-
-    @Override
-    public void play() {
-        if(!isPlaying()){
-            music.play();
-        }
-    }
-
-    @Override
-    public void pause() {
-        if(isPlaying()){
-            music.pause();
-        }
-    }
-
-    @Override
-    public void stop() {
-        if(isPlaying()){
-            music.stop();
-        }
-    }
-
-    @Override
-    public boolean isPlaying() {
-        return music.isPlaying();
-    }
-
-    @Override
-    public void setLooping(boolean isLooping) {
-        music.setLooping(isLooping);
-    }
-
-    @Override
-    public boolean isLooping() {
-        return music.isLooping();
-    }
-
-    @Override
-    public void setVolume(float volume) {
-        music.setVolume(volume);
-    }
-
-    @Override
-    public float getVolume() {
-
-        return music.getVolume();
-    }
-
-    @Override
-    public void setPan(float pan, float volume) {
-        music.setPan(pan, volume);
-    }
-
-    @Override
-    public void setPosition(float position) {
-        music.setPosition(position);
-    }
-
-    @Override
-    public float getPosition() {
-        return music.getPosition();
-    }
-
-    @Override
-    public void dispose() {
-        music.dispose();
-    }
-
-    @Override
-    public void setOnCompletionListener(OnCompletionListener listener) {
-        music.setOnCompletionListener(listener);
-    }
-
-    public void update(ArrayList<String> songs){
-        this.songs = songs;
-    }
-}

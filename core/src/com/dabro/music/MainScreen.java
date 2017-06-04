@@ -46,14 +46,14 @@ public class MainScreen extends Screen{
         searchSongs = new SearchSongs();
         loadSongs = new LoadSongs();
         songs = loadSongs.songs;
-        System.out.println(player);
         player = new Player(songs);
+        System.out.println(player);
 
     }
 
     @Override
     protected void handleInput() {
-        if(Gdx.input.isKeyJustPressed(Input.Keys.O) && !isloading){
+        if (Gdx.input.isKeyJustPressed(Input.Keys.O) && !isloading) {
             isloading = true;
             thread2 = new Thread(new Runnable() {
                 @Override
@@ -65,26 +65,35 @@ public class MainScreen extends Screen{
                     loadSongs.readSongs();
                     isloading = false;
                     try {
-                    player.update(songs);
+                        player.update(songs);
+                        player.newSong();
+                    } catch (Exception e) {
                     }
-                    catch(Exception e){}
                 }
             });
             thread2.start();
         }
-            if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+        if (Gdx.input.isKeyJustPressed(Input.Keys.SPACE)) {
+            playpausePosition.set(1502, 948, 0);
+            try {
+                player.update(songs);
+            } catch (Exception e) {
+            }
+            player.firststart = true;
+            player.playPause();
+        } else {
+
+            playpausePosition.set(1500,950,0);
+
+            if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
                 try {
                     player.update(songs);
+                } catch (Exception e) {
                 }
-                catch(Exception e){}
-                player.playPause();
-            } else if (Gdx.input.isKeyJustPressed(Input.Keys.ENTER)) {
-                try {
-                    player.update(songs);
-                }
-                catch(Exception e){}
+                player.firststart = true;
                 player.newSong();
             }
+    }
 
             /*else if (Gdx.input.isKeyJustPressed(Input.Keys.LEFT)) {
                 try {
@@ -145,6 +154,12 @@ public class MainScreen extends Screen{
 
 
         loading.update(isloading);
+        try{
+            System.out.println(player.firststart);
+        }
+        catch(Exception e){
+
+        }
     }
 
     @Override
