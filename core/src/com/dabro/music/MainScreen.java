@@ -19,8 +19,8 @@ public class MainScreen extends Screen{
     LoadSongs loadSongs;
     ArrayList<String> songs;
 
-    Texture playpauseButton;
-    Vector3 playpausePosition;
+    Texture playpauseButton, skipForwardButton, skipBackwardButton;
+    Vector3 playpausePosition, skipForwardPosition, skipBackwardPosition;
 
 
     Thread thread2;
@@ -36,7 +36,11 @@ public class MainScreen extends Screen{
     public MainScreen(ScreenManager sm) {
         super(sm);
         playpauseButton = new Texture("Play.png");
+        skipBackwardButton = new Texture("Skipbackward.png");
+        skipForwardButton = new Texture("Skipforward.png");
         playpausePosition = new Vector3(1500,950,0);
+        skipBackwardPosition = new Vector3(1400, 950,0);
+        skipForwardPosition = new Vector3(1600, 950,0);
         font = new BitmapFont(false);
         loading = new Loading( 1920/2-80, 1080/2);
         searchSongs = new SearchSongs();
@@ -96,6 +100,7 @@ public class MainScreen extends Screen{
                 player.oneForward();
             }*/
 
+            //Play/Pause Button
             if(Gdx.input.getX() >= playpausePosition.x && Gdx.input.getX() <= playpausePosition.x+playpauseButton.getWidth() && Gdx.graphics.getHeight()-Gdx.input.getY() >= playpausePosition.y && Gdx.graphics.getHeight()-Gdx.input.getY() <= playpausePosition.y+playpauseButton.getHeight() ){
                 if(Gdx.input.justTouched()){
                     playpausePosition.set(1502,948,0);
@@ -118,6 +123,16 @@ public class MainScreen extends Screen{
                     playpauseButton = new Texture("Play.png");
                 else
                     playpauseButton = new Texture("Pause.png");
+            }
+
+            //SkipForward Button
+            if(true){
+
+            }
+
+            //SkipBackward Button
+            if(true){
+
             }
 
 

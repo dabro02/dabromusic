@@ -32,6 +32,7 @@ public class Player implements Music {
             music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
             actualsong = actualsong.substring(0, actualsong.length() - 4);
             segs = actualsong.split("\\\\");
+            music.setPosition(20f);
         }
         catch(Exception e){}
     }
