@@ -14,6 +14,8 @@ import java.util.Arrays;
 public class Player implements Music {
 
     boolean firststart = false;
+    int playstatus = 0;
+    int song = 0;
 
     ArrayList<String> playedSongs;
 
@@ -28,9 +30,14 @@ public class Player implements Music {
             math = new MathUtils();
             try {
             this.songs = songs;
+            if(playstatus == 0){
             actualsong = songs.get(math.random(0, songs.size()));
             //playedSongs.add(actualsong);
-            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+                }
+            else if(playstatus == 1){
+                actualsong = songs.get(song);
+            }
+                music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
             actualsong = actualsong.substring(0, actualsong.length() - 4);
             segs = actualsong.split("\\\\");
         }
@@ -42,7 +49,13 @@ public class Player implements Music {
         music.stop();}
         catch (Exception e){}
         try{
-        actualsong = songs.get(math.random(0, songs.size()));
+            if(playstatus == 0){
+            actualsong = songs.get(math.random(0, songs.size()));
+            //playedSongs.add(actualsong);
+        }
+        else if(playstatus == 1){
+            actualsong = songs.get(song++);
+        }
         //playedSongs.add(actualsong);
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         actualsong = actualsong.substring(0, actualsong.length()-4);

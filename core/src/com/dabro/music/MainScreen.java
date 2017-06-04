@@ -21,6 +21,7 @@ public class MainScreen extends Screen{
 
     Texture playpauseButton, skipForwardButton, skipBackwardButton;
     Vector3 playpausePosition, skipForwardPosition, skipBackwardPosition;
+    boolean isskippingf = false, isskippingb= false;
 
 
     Thread thread2;
@@ -39,8 +40,8 @@ public class MainScreen extends Screen{
         skipBackwardButton = new Texture("Skipbackward.png");
         skipForwardButton = new Texture("Skipforward.png");
         playpausePosition = new Vector3(1500,950,0);
-        skipBackwardPosition = new Vector3(1400, 950,0);
-        skipForwardPosition = new Vector3(1600, 950,0);
+        skipBackwardPosition = new Vector3(1420, 950,0);
+        skipForwardPosition = new Vector3(1580, 950,0);
         font = new BitmapFont(false);
         loading = new Loading( 1920/2-80, 1080/2);
         searchSongs = new SearchSongs();
@@ -135,13 +136,41 @@ public class MainScreen extends Screen{
             }
 
             //SkipForward Button
-            if(true){
-
+        if(Gdx.input.getX() >= skipForwardPosition.x && Gdx.input.getX() <= skipForwardPosition.x+skipForwardButton.getWidth() && Gdx.graphics.getHeight()-Gdx.input.getY() >= skipForwardPosition.y && Gdx.graphics.getHeight()-Gdx.input.getY() <= skipForwardPosition.y+skipForwardButton.getHeight() ){
+            if(Gdx.input.isTouched()){
+                isskippingf = true;
+                player.music.setPosition(player.music.getPosition()+0.5f);
+                try {
+                    player.update(songs);
+                }
+                catch(Exception e){}
             }
+            else{
+                isskippingf = false;
+            }
+            skipForwardButton= new Texture("SkipforwardPointed.png");
+        }
+        else{
+            skipForwardButton = new Texture("Skipforward.png");
+        }
 
             //SkipBackward Button
-            if(true){
-
+            if(Gdx.input.getX() >= skipBackwardPosition.x && Gdx.input.getX() <= skipBackwardPosition.x+skipBackwardButton.getWidth() && Gdx.graphics.getHeight()-Gdx.input.getY() >= skipBackwardPosition.y && Gdx.graphics.getHeight()-Gdx.input.getY() <= skipBackwardPosition.y+skipBackwardButton.getHeight() ){
+                if(Gdx.input.isTouched()){
+                    isskippingb = true;
+                    player.music.setPosition(player.music.getPosition()-1f);
+                    try {
+                        player.update(songs);
+                    }
+                    catch(Exception e){}
+                }
+                else{
+                    isskippingb = false;
+                }
+                    skipBackwardButton= new Texture("SkipbackwardPointed.png");
+            }
+                else{
+                skipBackwardButton = new Texture("Skipbackward.png");
             }
 
 
@@ -151,21 +180,31 @@ public class MainScreen extends Screen{
     @Override
     public void update(float dt) {
         handleInput();
-
-
         loading.update(isloading);
-        try{
-            System.out.println(player.firststart);
-        }
-        catch(Exception e){
+        System.out.println(player.music.getPosition());
+        /*try{
+            if(!player.isPlaying() && player.firststart){
+                System.out.println("der status ist: "+ player.firststart+ "           ");
+                player.newSong();
+            }
+        }catch (Exception e){
 
-        }
+        }*/
     }
 
     @Override
     public void render(SpriteBatch sb) {
         sb.begin();
         sb.draw(playpauseButton, playpausePosition.x,playpausePosition.y);
+        if(isskippingb)
+            sb.draw(skipBackwardButton, skipBackwardPosition.x+2, skipBackwardPosition.y-2);
+        else
+            sb.draw(skipBackwardButton, skipBackwardPosition.x, skipBackwardPosition.y);
+        if(isskippingf)
+            sb.draw(skipForwardButton, skipForwardPosition.x+2, skipForwardPosition.y-2);
+        else
+            sb.draw(skipForwardButton, skipForwardPosition.x, skipForwardPosition.y);
+
         try{
         font.draw(sb,player.getChrSequence(), 200, 1000 );}
         catch(Exception e){
