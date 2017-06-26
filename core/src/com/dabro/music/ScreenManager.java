@@ -1,6 +1,8 @@
 package com.dabro.music;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 
 import java.util.Stack;
 
@@ -30,11 +32,16 @@ public class ScreenManager {
 
     public void update(float dt){
         screens.peek().update(dt);
-
+        resize();
     }
 
-    public void render(SpriteBatch sb){
-        screens.peek().render(sb);
+    public void resize(){
+        screens.peek().cam.setToOrtho(false,Gdx.graphics.getWidth(),Gdx.graphics.getHeight());
+        screens.peek().cam.update();
+    }
+
+    public void render(SpriteBatch sb, ShapeRenderer sr){
+        screens.peek().render(sb,sr);
     }
 
 }

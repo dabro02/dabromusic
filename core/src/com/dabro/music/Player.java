@@ -7,17 +7,19 @@ import com.badlogic.gdx.math.MathUtils;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Stack;
 
 /**
  * Created by Daniel on 31.05.2017.
  */
 public class Player implements Music {
 
-    boolean firststart = false;
+    boolean shallplay = false;
     int playstatus = 0;
     int song = 0;
 
-    ArrayList<String> playedSongs;
+    Stack<String> playedSongs;
+    Stack<String> poppedSongs;
 
     ArrayList<String> songs;
     Music music;
@@ -25,21 +27,16 @@ public class Player implements Music {
     String actualsong;
     String[] segs;
 
+    Thread weißichnicht;
+
     Player(ArrayList<String> songs){
-            playedSongs = new ArrayList<String>();
+            playedSongs = new Stack<String>();
+            poppedSongs = new Stack<String>();
             math = new MathUtils();
             try {
             this.songs = songs;
-            if(playstatus == 0){
-            actualsong = songs.get(math.random(0, songs.size()));
-            //playedSongs.add(actualsong);
-                }
-            else if(playstatus == 1){
-                actualsong = songs.get(song);
-            }
-                music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
-            actualsong = actualsong.substring(0, actualsong.length() - 4);
-            segs = actualsong.split("\\\\");
+            newSong();
+            shallplay = true;
         }
         catch(Exception e){}
     }
@@ -51,16 +48,15 @@ public class Player implements Music {
         try{
             if(playstatus == 0){
             actualsong = songs.get(math.random(0, songs.size()));
-            //playedSongs.add(actualsong);
         }
         else if(playstatus == 1){
             actualsong = songs.get(song++);
         }
-        //playedSongs.add(actualsong);
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+        playedSongs.push(actualsong);
         actualsong = actualsong.substring(0, actualsong.length()-4);
         segs = actualsong.split("\\\\");
-        if(firststart) {
+        if(shallplay) {
             music.play();
         }
         }
@@ -72,14 +68,19 @@ public class Player implements Music {
         if(isPlaying()){
             pause();
             System.out.println("pause");
+            shallplay = false;
         }
         else{
             play();
             System.out.println("play");
+            shallplay = true;
         }
     }
 
     public CharSequence getChrSequence(){
+        if(segs[segs.length-1].length() > 55){
+            return (CharSequence) new String(segs[segs.length-1].substring(0,55)+" ...");
+        }
         return (CharSequence) segs[segs.length-1];
     }
 
@@ -190,47 +191,43 @@ public class Player implements Music {
     public void update(ArrayList<String> songs){
         this.songs = songs;
     }
+
+
+    public void oneBack() {
+        try{
+            music.stop();}
+        catch (Exception e){}
+        try{
+            if(playedSongs.size()>1){
+                poppedSongs.push(playedSongs.peek());
+                playedSongs.pop();}
+            actualsong = playedSongs.peek();
+            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+            actualsong = actualsong.substring(0, actualsong.length()-4);
+            segs = actualsong.split("\\\\");
+            if(shallplay)
+            music.play();
+        }
+        catch (Exception e){}
+    }
+
+    public void oneForward() {
+        if(poppedSongs.isEmpty()){
+        newSong();}
+        else{
+            actualsong = poppedSongs.peek();
+            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
+            actualsong = actualsong.substring(0, actualsong.length()-4);
+            segs = actualsong.split("\\\\");
+            if(shallplay)
+                music.play();
+            playedSongs.push(poppedSongs.peek());
+            poppedSongs.pop();
+        }
+    }
 }
 
 
 
-/*
-    public void oneBack() {
-        i++;
-        try{
-            music.stop();}
-        catch (Exception e){}
 
 
-        try{
-        if(i >1){
-            actualsong = playedSongs.get(playedSongs.size()-i);}
-        else{
-            i = 2;}
-        music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
-        actualsong = actualsong.substring(0, actualsong.length()-4);
-        segs = actualsong.split("\\\\");
-        music.play();}
-        catch (Exception e){}
-        System.out.println(i);
-    }
-
-    public void oneForward() {
-        i--;
-        try{
-            music.stop();}
-        catch (Exception e){}
-
-        try{
-            if(i < playedSongs.size()){
-            actualsong = playedSongs.get(playedSongs.size()-i);}
-        else{
-            i = playedSongs.size()-1;}
-            music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
-            actualsong = actualsong.substring(0, actualsong.length()-4);
-            segs = actualsong.split("\\\\");
-            music.play();}
-        catch (Exception e){}
-        System.out.println(i);
-    }
-*/
