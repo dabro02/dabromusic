@@ -3,8 +3,14 @@ package com.dabro.music;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Music;
 import com.badlogic.gdx.math.MathUtils;
+import org.apache.commons.configuration2.Configuration;
+import org.apache.commons.configuration2.FileBasedConfiguration;
+import org.apache.commons.configuration2.PropertiesConfiguration;
+import org.apache.commons.configuration2.builder.FileBasedConfigurationBuilder;
+import org.apache.commons.configuration2.builder.fluent.Parameters;
 
 import java.io.File;
+import java.security.Policy;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Stack;
@@ -13,6 +19,10 @@ import java.util.Stack;
  * Created by Daniel on 31.05.2017.
  */
 public class Player implements Music {
+
+    Parameters params;
+    FileBasedConfigurationBuilder<FileBasedConfiguration> builder;
+    Configuration config;
 
     boolean shallplay = false;
     int playstatus = 0;
@@ -27,13 +37,14 @@ public class Player implements Music {
     String actualsong;
     String[] segs;
 
-    Thread weißichnicht;
 
     Player(ArrayList<String> songs){
+        params = new Parameters();
             playedSongs = new Stack<String>();
             poppedSongs = new Stack<String>();
             math = new MathUtils();
             try {
+                //builder = new FileBasedConfigurationBuilder<FileBasedConfiguration>(PropertiesConfiguration.class).configure(params.fileBased());
             this.songs = songs;
             newSong();
             shallplay = true;
@@ -52,6 +63,7 @@ public class Player implements Music {
         else if(playstatus == 1){
             actualsong = songs.get(song++);
         }
+
         music = Gdx.audio.newMusic(Gdx.files.internal((String) actualsong));
         playedSongs.push(actualsong);
         actualsong = actualsong.substring(0, actualsong.length()-4);
@@ -59,6 +71,9 @@ public class Player implements Music {
         if(shallplay) {
             music.play();
         }
+            /*builder.configure(params.fileBased().setFile(new File(playedSongs.peek())));
+            config = builder.getConfiguration();
+            config.getProperties("hi");*/
         }
         catch (Exception e){}
     }
